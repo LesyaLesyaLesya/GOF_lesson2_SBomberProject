@@ -50,15 +50,17 @@ public:
 class DropBombCommand:public AbstractCommand
 {
 private:
+    uint16_t& BombCounter_;
     const Plane* currPlane_;
-    std::vector<DynamicObject*> vecDynamicObj_;
-    uint16_t BombCounter_;
+    std::vector<DynamicObject*>& vecDynamicObj_;
+
 public:
-    DropBombCommand();
+    DropBombCommand(const Plane* currPlane, std::vector<DynamicObject*>& vecDynamicObj, uint16_t& BombCounter) :
+        BombCounter_(BombCounter), currPlane_(currPlane), vecDynamicObj_(vecDynamicObj) {};
     ~DropBombCommand() override;
 
     void Execute() override;
-    void SetParams(const Plane* currPlane, std::vector<DynamicObject*>& vecDynamicObj, const uint16_t& BombCounter);
+    void SetParams(const Plane* currPlane, std::vector<DynamicObject*>& vecDynamicObj, const uint16_t& BombCounter_);
 };
 
 class SBomber
