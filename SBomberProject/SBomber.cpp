@@ -77,15 +77,10 @@ void DeleteStaticObjCommand::Execute()
         }
     }
 }
- DropBombCommand::DropBombCommand() 
- {
-     BombCounter_ = 0;
-     currPlane_ = nullptr;
- }
 
  DropBombCommand::~DropBombCommand()
  {
-    
+     delete currPlane_;
  }
  void DropBombCommand::Execute()
  {
@@ -106,18 +101,16 @@ void DeleteStaticObjCommand::Execute()
          pBomb->SetWidth(SMALL_CRATER_SIZE);
 
          vecDynamicObj_.push_back(pBomb);
-         BombCounter_--;
+         //BombCounter--;
          //score -= Bomb::BombCost;
      }
     
  }
- void DropBombCommand::SetParams(const Plane* currPlane, std::vector<DynamicObject*>  &vecDynamicObj, const uint16_t& BombCounter)
+ void DropBombCommand::SetParams(const Plane* currPlane, std::vector<DynamicObject*>& vecDynamicObj, const uint16_t& BombCounter)
  {
      currPlane_ = currPlane;
      vecDynamicObj_ = vecDynamicObj;
-     BombCounter_ = BombCounter;
-
-         
+     BombCounter_ = BombCounter;       
  }
 
 SBomber::SBomber(std::shared_ptr<MyTools::LoggerInterface> logger)
@@ -453,14 +446,14 @@ void SBomber::DrawFrame()
         {
             /*if (typeid(vecDynamicObj[i]) == typeid(Bomb))
             {
-                auto image = std::make_shared<Bomb>(vecDynamicObj[i]);
+                const auto image = std::make_shared<Bomb>(vecDynamicObj[i]);
                 BombDecorator decorator{ std::static_pointer_cast<DynamicObject>(image) };
                 decorator.Draw();
             }
             else
             {*/
                 vecDynamicObj[i]->Draw();
-            /*}   */      
+            /*}  */       
         }
     }
 
@@ -503,8 +496,8 @@ void SBomber::DropBomb()
 
         const Plane* pPlane = FindPlane();
         //Plane* pPlane = FindPlane();
-        DropBombCommand* dbCom = new DropBombCommand;
-        dbCom->SetParams(pPlane, vecDynamicObj, bombsNumber);
+        DropBombCommand* dbCom = new DropBombCommand(pPlane, vecDynamicObj, bombsNumber);
+        //dbCom->SetParams(pPlane, vecDynamicObj, bombsNumber);
         CommandExecuter(dynamic_cast <AbstractCommand*>(dbCom));
 
         //double x = pPlane->GetX() + 4;
